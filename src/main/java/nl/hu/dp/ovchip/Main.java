@@ -1,5 +1,9 @@
 package nl.hu.dp.ovchip;
 
+import nl.hu.dp.ovchip.dao.AdresDAO;
+import nl.hu.dp.ovchip.dao.AdresDAOHibernate;
+import nl.hu.dp.ovchip.dao.ReizigerDAO;
+import nl.hu.dp.ovchip.dao.ReizigerDAOHibernate;
 import nl.hu.dp.ovchip.domein.Adres;
 import nl.hu.dp.ovchip.domein.Product;
 import nl.hu.dp.ovchip.domein.Reiziger;
@@ -12,6 +16,7 @@ import org.hibernate.query.Query;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,6 +51,14 @@ public class Main {
 
     public static void main(String[] args) throws SQLException {
         testFetchAll();
+        ReizigerDAO reizigerDAO= new ReizigerDAOHibernate(getSession());
+        AdresDAO adresDAO= new AdresDAOHibernate(getSession());
+        Reiziger r= new Reiziger( 1000,"n","", "Vermeulen", new Date());
+        Adres adres= new Adres(1000, "5df", "5555", "kaas", "ddddd", 1000);
+       // reizigerDAO.save(r);
+        //adresDAO.save(adres);
+        reizigerDAO.findAll();
+
     }
 
     /**

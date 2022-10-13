@@ -8,7 +8,7 @@ import java.util.List;
 @Entity
 @Table(name = "reiziger")
 public class Reiziger {
-    @GeneratedValue
+
     @Id
     @Column(name = "reiziger_id")
     private  int id;
@@ -28,8 +28,16 @@ public class Reiziger {
     orphanRemoval = true)
     private List<OvChipkaart> ovChipkaart;
 
-    public  Reiziger( int id, String voorletters, String tussenvoegsel, String achternaam, Date geboortedatum){
-        this.id= id;
+    public  Reiziger(int id, String voorletters, String tussenvoegsel, String achternaam, Date geboortedatum){
+        this.id = id;
+        this.voorletters = voorletters;
+        this.tussenvoegsel= tussenvoegsel;
+        this.achternaam= achternaam;
+        this.geboortedatum= geboortedatum;
+        ovChipkaart =  new ArrayList<>();
+    }
+
+    public  Reiziger( String voorletters, String tussenvoegsel, String achternaam, Date geboortedatum){
         this.voorletters = voorletters;
         this.tussenvoegsel= tussenvoegsel;
         this.achternaam= achternaam;
