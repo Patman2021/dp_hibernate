@@ -21,23 +21,15 @@ public class Reiziger {
     @Temporal(TemporalType.DATE)
     @Column(name = "geboortedatum")
     private Date geboortedatum;
-    @OneToOne()
-    @JoinColumn(name= "reiziger_id", nullable = false)
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name= "reiziger_id",  nullable = false)
     private Adres adres;
-    @OneToMany(mappedBy = "reiziger", cascade = CascadeType.ALL,
+    @OneToMany(mappedBy = "reiziger",fetch = FetchType.EAGER,cascade = CascadeType.ALL,
     orphanRemoval = true)
     private List<OvChipkaart> ovChipkaart;
 
     public  Reiziger(int id, String voorletters, String tussenvoegsel, String achternaam, Date geboortedatum){
         this.id = id;
-        this.voorletters = voorletters;
-        this.tussenvoegsel= tussenvoegsel;
-        this.achternaam= achternaam;
-        this.geboortedatum= geboortedatum;
-        ovChipkaart =  new ArrayList<>();
-    }
-
-    public  Reiziger( String voorletters, String tussenvoegsel, String achternaam, Date geboortedatum){
         this.voorletters = voorletters;
         this.tussenvoegsel= tussenvoegsel;
         this.achternaam= achternaam;
@@ -107,7 +99,9 @@ public class Reiziger {
     }
 
     public void addOvChipKaart(OvChipkaart ovChipkaart) {
+
         this.ovChipkaart.add(ovChipkaart);
+        ovChipkaart.setReiziger(this);
     }
 
     public void removeOvChipKaart(OvChipkaart ov){

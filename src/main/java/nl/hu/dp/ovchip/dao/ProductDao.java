@@ -7,14 +7,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public interface ProductDao {
-    boolean save(Product product) throws SQLException;
+    boolean save(Product product);
 
-    ArrayList<Product> findByOvkaart(OvChipkaart ovChipkaart) throws SQLException;
 
-    boolean update(Product product) throws SQLException;
+    boolean update(Product product);
 
     boolean delete(Product product);
 
 
-    ArrayList<Product> findAll() throws SQLException;
+    ArrayList<Product> findAll();
 }

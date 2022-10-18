@@ -10,7 +10,6 @@ import java.util.Set;
 @Table(name = "product")
 public class Product {
 
-    @GeneratedValue
     @Id
     @Column(name = "product_nummer")
     private int productNummer;
@@ -21,9 +20,8 @@ public class Product {
     private String beschrijving;
     @Column(name = "prijs")
     private float prijs;
-    @Transient
-    private OvChipkaart ovChipkaart;
-    @ManyToMany
+
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "ov_chipkaart_product",
              joinColumns = @JoinColumn(name = "product_nummer"), inverseJoinColumns = @JoinColumn(name = "kaart_nummer"))
     private List<OvChipkaart> ovChipkaartenList = new ArrayList<>();
@@ -93,9 +91,6 @@ public class Product {
         return naam;
     }
 
-    public OvChipkaart getOvChipkaart() {
-        return ovChipkaart;
-    }
 
     public List<OvChipkaart> getOvChipkaartenList() {
         return ovChipkaartenList;
