@@ -52,7 +52,11 @@ public class Main {
         AdresDAO adresDAO = new AdresDAOHibernate(factory);
         OvChipDao ovChipDao = new OvChipkaartDAOHibernate(factory);
         ProductDao productDao = new ProductDAOHibernate(factory);
-        testDAOHibernate(adresDAO, reizigerDAO, ovChipDao, productDao);
+
+        testReizigerDAO(reizigerDAO);
+        testAdresDAO(reizigerDAO, adresDAO);
+        testOvChipKaartDao(reizigerDAO, ovChipDao);
+        testproductDao(productDao, reizigerDAO);
 
     }
 
@@ -78,103 +82,154 @@ public class Main {
         }
     }
 
-    private static void testDAOHibernate(AdresDAO adresDAO, ReizigerDAO reizigerDAO, OvChipDao ovChipDao, ProductDao productDao) throws SQLException, ParseException {
-        Reiziger r1 = new Reiziger(12345, "T", "ES", "Ten", new Date());
-        Adres adres1 = new Adres(12345, "2312xx", "187A", "Oude kerkLaan", "Boxtel", 12345);
-        OvChipkaart ovChipkaart1 = new OvChipkaart(123456, new Date(2019 - 01 - 31), 2, 20000.00F);
-        Product p1 = new Product(98, "test", "testen is leuk", 10F);
-        // reiziger linken aan een adres en ov_chipkaart;
-        r1.setAdres(adres1);
-        ovChipkaart1.addProductToList(p1);
-        r1.addOvChipKaart(ovChipkaart1);
 
+    private static void testReizigerDAO(ReizigerDAO reizigerDAO) throws SQLException, ParseException {
+        System.out.println("\n----------testReizigerDAO----------");
 
+        Reiziger reiziger1 = new Reiziger(12345, "T", "ES", "Ten", new Date());
 
-        System.out.println("\n--saven van elke class:\n");
-        if (reizigerDAO.save(r1)) {
-            System.out.println("reiziger  met id:" + r1.getId() + "save gelukt!");
-            System.out.println("Ov chipkaart met kaartnummer: " + ovChipkaart1.getKaartNummer() + "save  gelukt!");
-        } else {
-            System.out.println("oeps er ging iets fout");
-        }
-        if (adresDAO.save(adres1)) {
-            System.out.println("adres met id: " + adres1.getId() + "save gelukt!");
-        } else {
-            System.out.println("oeps er ging iets fout");
-        }
-        if (productDao.save(p1)) {
-            System.out.println("--product  met productnummer:" + p1.getProductNummer() + "save gelukt!");
-        } else {
-            System.out.println("oeps er ging iets fout");
-        }
-
-        System.out.println("\n--find reiziger by id!");
-        System.out.println(reizigerDAO.findById(12345));
-        System.out.println("\n--find reiziger by geboortedatum!");
-        System.out.println(reizigerDAO.findByGbdatum("2022-10-17"));
-        System.out.println("\n--findall reiziger ");
+        System.out.println("--findAll rezigers:");
         System.out.println(reizigerDAO.findAll());
+
+        System.out.println("\n---save reiziger:");
+        System.out.println("Voor de save: " + reizigerDAO.findAll().size());
+        reizigerDAO.save(reiziger1);
+        System.out.println("na save: " + reizigerDAO.findAll().size());
+
+
+        System.out.println("\n--find reiziger by geboortedatum:");
+        System.out.println(reizigerDAO.findByGbdatum("1998-09-01"));
+
+        System.out.println("\n--find reiziger by id:");
+        System.out.println(reizigerDAO.findById(12345));
+
+
+        System.out.println("\n--updaten reiziger:");
+        System.out.println("reiziger: " + reiziger1);
+        reiziger1.setAchternaam("kees");
+        reizigerDAO.update(reiziger1);
+        System.out.println(" na update:reiziger: " + reizigerDAO.findById(reiziger1.getId()));
+
+        int beginLengte = reizigerDAO.findAll().size();
+        System.out.println("\n--delete reiziger: " + beginLengte);
+        reizigerDAO.delete(reiziger1);
+        int eindeLengte = reizigerDAO.findAll().size();
+        System.out.println("na verwijderen: " + eindeLengte);
+    }
+
+    private static void testAdresDAO(ReizigerDAO reizigerDAO, AdresDAO adresDAO) throws SQLException {
+        System.out.println("\n----------testAdresDAO----------");
+
+        Reiziger reiziger1 = new Reiziger(99, "T", "ES", "Ten", new Date());
+        Adres adres1 = new Adres(12345, "2312xx", "187A", "Oude kerkLaan", "Boxtel");
+        adres1.setReiziger(reiziger1);
+
+        System.out.println("\nsave adres:");
+        reizigerDAO.save(reiziger1);
+        System.out.println("Voor de save: " + adresDAO.findAll().size());
+        adresDAO.save(adres1);
+        System.out.println("Na de save: " + adresDAO.findAll().size());
+
         System.out.println("\n--find adres by id!");
         System.out.println(adresDAO.findById(12345));
+
         System.out.println("\n--find adres by reiziger!");
-        System.out.println(adresDAO.findByReiziger(r1));
-        System.out.println("\n--find ov_chipkaart by reiziger!");
-        System.out.println(ovChipDao.findByReiziger(r1));
-        System.out.println("\n--find ov_chipkaart by kaartnummer!");
-        System.out.println(ovChipDao.findByKaart_Nummer(123456));
-        System.out.println("\n--findall producten");
+        System.out.println(adresDAO.findByReiziger(reiziger1));
+
+        System.out.println(adresDAO.findAll());
+        System.out.println("\n--updaten adress:");
+        System.out.println("adres: " + adres1);
+        adres1.setHuisnummer("7647");
+        adresDAO.update(adres1);
+        System.out.println("adres: " + adresDAO.findById(12345));
+
+
+        System.out.println("\n--delete adres ");
+        System.out.println("Aantal adressen voor het verwijderen: " + adresDAO.findAll().size());
+        adresDAO.delete(adres1);
+        System.out.println("Na  het verwijderen: " + adresDAO.findAll().size());
+    }
+
+
+    private static void testOvChipKaartDao(ReizigerDAO reizigerDAO, OvChipDao ovChipDao) throws SQLException {
+        System.out.println("\n----------testOvChipKaartDAO----------");
+
+        Reiziger reiziger1 = new Reiziger(99, "T", "ES", "Ten", new Date());
+        OvChipkaart ovChipkaart1 = new OvChipkaart(123456, new Date(2019 - 01 - 31), 2, 20000.00F);
+        ovChipkaart1.setReiziger(reiziger1);
+
+        System.out.println("\nsave ov-kaart:");
+        reizigerDAO.save(reiziger1);
+        if (ovChipDao.save(ovChipkaart1)) {
+            System.out.println("opslaan ovChipkaart gelukt!");
+        } else {
+            System.out.println("oeps er ging iets fout!");
+        }
+
+        System.out.println("\n--find ovkaart by kaartnummer!");
+        System.out.println(ovChipDao.findByKaart_Nummer(ovChipkaart1.getKaartNummer()));
+
+        System.out.println("\n--find ovChipKaart by reiziger!");
+        System.out.println(ovChipDao.findByReiziger(reiziger1));
+
+        System.out.println("\n--updaten ov-chipkaart");
+        System.out.println("ov Chipkaart: " + ovChipkaart1);
+        ovChipkaart1.setSaldo(1000f);
+        ovChipDao.update(ovChipkaart1);
+        System.out.println("adres: " + ovChipDao.findByKaart_Nummer(ovChipkaart1.getKaartNummer()));
+
+
+        System.out.println("\n--delete adres ov-chipkaart ");
+        if (ovChipDao.delete(ovChipkaart1)) {
+            System.out.println("verwijderen is gelukt");
+        } else {
+            System.out.println("oeps er ging iets fout");
+        }
+    }
+
+    private static void testproductDao(ProductDao productDao, ReizigerDAO reizigerDAO) throws SQLException {
+        System.out.println("\n----------testProductDao----------");
+
+
+        OvChipkaart ovChipkaart1 = new OvChipkaart(1234567, new Date(2019 - 01 - 31), 2, 20000.00F);
+        Reiziger reiziger1 = new Reiziger(999, "T", "ES", "Ten", new Date());
+        reiziger1.addOvChipKaart(ovChipkaart1);
+        Product product1 = new Product(998, "test", "testen is leuk", 10F);
+        product1.addOvkaart(ovChipkaart1);
+
+
+        System.out.println("--findAll producten:");
         System.out.println(productDao.findAll());
 
+        System.out.println("\nsave Product:");
+        reizigerDAO.save(reiziger1);
+        System.out.println("Voor de save: " + productDao.findAll().size());
+        productDao.save(product1);
+        System.out.println("Na de save: " + productDao.findAll().size());
 
-        System.out.println("\n--updaten van elke class:\n");
-        r1.setAchternaam("kees");
-        System.out.println("\nUpdate reiziger");
-        if (reizigerDAO.update(r1)) {
-            System.out.println("reiziger  met id :" + r1.getId() + " Update gelukt!");
-        } else System.out.println("oeps er ging iets mis");
+        System.out.println("\n--findby  product id");
+        productDao.update(product1);
+        System.out.println( productDao.findById(product1.getProductNummer()));
 
-        System.out.println("\nUpdate ovChipkaart");
-        ovChipkaart1.setKlasse(1);
-        if (ovChipDao.update(ovChipkaart1)) {
-            System.out.println("--ov_chipkaart met kaartnummer: " + ovChipkaart1.getKaartNummer() + " Update gelukt!");
-        } else System.out.println("oeps er ging iets mis");
 
-        System.out.println("\nUpdate product");
-        p1.setBeschrijving("assd");
-        if (productDao.update(p1)) {
-            System.out.println("product met productnummer: " + p1.getProductNummer() + " Update gelukt!");
-        } else System.out.println("oeps er ging iets mis");
+        System.out.println("\n--updaten product");
+        System.out.println("product: " + productDao.findById(product1.getProductNummer()));
+        product1.setBeschrijving("aanpassing");
+        productDao.update(product1);
+        System.out.println("product: " +  productDao.findById(product1.getProductNummer()));
 
-        System.out.println("\nUpdate adress");
-        adres1.setHuisnummer("1");
-        if (adresDAO.update(adres1)) {
-            System.out.println("adres met id: " + adres1.getId() + " Update gelukt!");
-        } else System.out.println("oeps er ging iets mis");
 
-        System.out.println("\n--deleten van elke class:\n");
-        if (adresDAO.delete(adres1)) {
-            System.out.println("Adres met id: "+ adres1.getId()+" delete werkt");
-        }else {
+        System.out.println("\n--delete product ");
+        if (productDao.delete(product1)) {
+            reizigerDAO.delete(reiziger1);
+            System.out.println("verwijderen is gelukt");
+        } else {
             System.out.println("oeps er ging iets fout");
         }
-        if (productDao.delete(p1)) {
-            System.out.println("\nproduct met nummer: " + p1.getProductNummer() + " delete werkt");
-        }else {
-            System.out.println("oeps er ging iets fout");
-        }
-        if (ovChipDao.delete(ovChipkaart1)) {
-            System.out.println("\nov_chipkaart met kaartnummer:"+ ovChipkaart1.getKaartNummer()+" delete werkt");
-        }else {
-            System.out.println("oeps er ging iets fout");
-        }
-        if (reizigerDAO.delete(r1)) {
-            System.out.println("\nreiziger met id: "+ r1.getId()+" delete werkt");
-        }else {
-            System.out.println("oeps er ging iets fout");
-        }
-
-
     }
+
+
+
 
 
 }

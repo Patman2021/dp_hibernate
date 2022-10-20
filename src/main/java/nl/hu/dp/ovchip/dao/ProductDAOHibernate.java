@@ -98,4 +98,24 @@ public class ProductDAOHibernate implements ProductDao {
             session.close();
         }
     }
+
+    @Override
+    public Product findById(int id) {
+        Session session= generateSession();
+        Transaction tx = session.getTransaction();
+        try {
+            tx.begin();
+            Query q = session.createQuery("from Product where id=:i ");
+            q.setParameter("i", id);
+            Product tmo = (Product) q.getSingleResult();
+            tx.commit();
+            return tmo;
+        } catch (RuntimeException e) {
+            tx.rollback();
+            throw e;
+
+        } finally {
+            session.close();
+        }
+    }
 }

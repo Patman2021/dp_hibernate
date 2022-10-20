@@ -129,7 +129,6 @@ public class ReizigerDAOHibernate implements ReizigerDAO {
             Query q = session.createQuery("from Reiziger  ");
             List<Reiziger> tmo = (List<Reiziger>) q.getResultList();
             tx.commit();
-            System.out.println(tmo);
             return tmo;
         } catch (RuntimeException e) {
             tx.rollback();

@@ -17,6 +17,8 @@ public interface AdresDAO {
 
     Adres findById(int id);
 
+    List<Adres> findAll();
+
 
 
 

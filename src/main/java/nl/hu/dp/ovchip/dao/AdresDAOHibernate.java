@@ -8,6 +8,7 @@ import org.hibernate.Transaction;
 
 import javax.persistence.Query;
 import java.sql.SQLException;
+import java.util.List;
 
 public class AdresDAOHibernate implements AdresDAO {
 
@@ -46,8 +47,8 @@ public class AdresDAOHibernate implements AdresDAO {
         Transaction tx = session.getTransaction();
         try {
             tx.begin();
-            Query q = session.createQuery("from Adres where reizigerId=:i ");
-            q.setParameter("i", reiziger.getId());
+            Query q = session.createQuery("from Adres where reiziger=:i ");
+            q.setParameter("i", reiziger);
             Adres tmo = (Adres) q.getSingleResult();
             tx.commit();
             return tmo;
@@ -66,7 +67,7 @@ public class AdresDAOHibernate implements AdresDAO {
         Transaction tx = session.getTransaction();
         try {
             tx.begin();
-            session.delete(adres);
+            session.update(adres);
             session.flush();
             tx.commit();
             return true;
@@ -98,6 +99,7 @@ public class AdresDAOHibernate implements AdresDAO {
 
     @Override
     public Adres findById(int id) {
+        System.out.println("id " + id);
         Session session = generateSession();
         Transaction tx = session.getTransaction();
         try {
@@ -110,6 +112,23 @@ public class AdresDAOHibernate implements AdresDAO {
         } catch (RuntimeException e) {
             tx.rollback();
             throw e;
+        } finally {
+            session.close();
+        }
+    }
+    @Override
+    public List<Adres> findAll() {
+        Session session= generateSession();
+        Transaction tx = session.getTransaction();
+        try {
+            tx.begin();
+            Query q = session.createQuery("from Adres  ");
+            List<Adres> tmo = (List<Adres>) q.getResultList();
+            return tmo;
+        } catch (RuntimeException e) {
+            tx.rollback();
+            throw e;
+
         } finally {
             session.close();
         }

@@ -115,6 +115,7 @@ public class OvChipkaart {
 
         return "OvChipkaart{" +
                 "kaartNummer=" + kaartNummer +
+                ", Reiziger_id=" + reiziger.getId()+
                 ", geligTot=" + geligTot +
                 ", klasse=" + klasse +
                 ", saldo=" + saldo +

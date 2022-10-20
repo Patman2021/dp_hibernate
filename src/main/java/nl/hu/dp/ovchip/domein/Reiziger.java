@@ -11,43 +11,46 @@ public class Reiziger {
 
     @Id
     @Column(name = "reiziger_id")
-    private  int id;
+    private int id;
     @Column(name = "voorletters")
     private String voorletters;
     @Column(name = "tussenvoegsel")
-    private  String tussenvoegsel;
+    private String tussenvoegsel;
     @Column(name = "achternaam")
     private String achternaam;
     @Temporal(TemporalType.DATE)
     @Column(name = "geboortedatum")
     private Date geboortedatum;
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name= "reiziger_id",  nullable = false)
+    @OneToOne(
+            mappedBy = "reiziger",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private Adres adres;
-    @OneToMany(mappedBy = "reiziger",fetch = FetchType.EAGER,cascade = CascadeType.ALL,
-    orphanRemoval = true)
+    @OneToMany(mappedBy = "reiziger", fetch = FetchType.EAGER, cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<OvChipkaart> ovChipkaart;
 
-    public  Reiziger(int id, String voorletters, String tussenvoegsel, String achternaam, Date geboortedatum){
+    public Reiziger(int id, String voorletters, String tussenvoegsel, String achternaam, Date geboortedatum) {
         this.id = id;
         this.voorletters = voorletters;
-        this.tussenvoegsel= tussenvoegsel;
-        this.achternaam= achternaam;
-        this.geboortedatum= geboortedatum;
-        ovChipkaart =  new ArrayList<>();
+        this.tussenvoegsel = tussenvoegsel;
+        this.achternaam = achternaam;
+        this.geboortedatum = geboortedatum;
+        ovChipkaart = new ArrayList<>();
     }
 
     public Reiziger() {
 
     }
 
-    public  int getId(){
-        return  this.id;
+    public int getId() {
+        return this.id;
     }
 
 
-    public String getNaam(){
-        return  this.voorletters + " " + this.tussenvoegsel + " " + this.achternaam;
+    public String getNaam() {
+        return this.voorletters + " " + this.tussenvoegsel + " " + this.achternaam;
     }
 
     public Date getGeboortedatum() {
@@ -66,8 +69,8 @@ public class Reiziger {
         return voorletters;
     }
 
-    public void setAdres(Adres adres){
-        this.adres= adres;
+    public void setAdres(Adres adres) {
+        this.adres = adres;
     }
 
     public void setOvChipkaart(ArrayList<OvChipkaart> ovChipkaart) {
@@ -104,8 +107,8 @@ public class Reiziger {
         ovChipkaart.setReiziger(this);
     }
 
-    public void removeOvChipKaart(OvChipkaart ov){
-            ovChipkaart.remove(ov);
+    public void removeOvChipKaart(OvChipkaart ov) {
+        ovChipkaart.remove(ov);
     }
 
     public Adres getAdres() {
@@ -113,10 +116,9 @@ public class Reiziger {
     }
 
 
-
     @Override
     public String toString() {
-        return   "reiziger {"+this.id +": "+ getNaam() +". Geboren op:"+ geboortedatum +" "+ adres +"}  Ov_chipkaart" + ovChipkaart;
+        return "reiziger {" + this.id + ": " + getNaam() + ". Geboren op:" + geboortedatum + " " + adres + "}  Ov_chipkaart" + ovChipkaart;
     }
 
 }

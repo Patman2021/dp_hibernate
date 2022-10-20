@@ -1,7 +1,6 @@
 package nl.hu.dp.ovchip.domein;
 
 
-
 import javax.persistence.*;
 
 @Entity
@@ -10,30 +9,29 @@ public class Adres {
 
     @Id
     @Column(name = "adres_id")
-    private  int id;
+    private int id;
 
     @Column(name = "postcode")
-    private  String postcode;
+    private String postcode;
     @Column(name = "huisnummer")
-    private  String huisnummer;
+    private String huisnummer;
 
     @Column(name = "straat")
     private String straat;
     @Column(name = "woonplaats")
-    private  String woonplaats;
-    @Column(name = "reiziger_id")
-    private  int reizigerId;
-    @OneToOne(mappedBy = "adres")
-    private  Reiziger reiziger;
+    private String woonplaats;
+
+    @OneToOne (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "reiziger_id")
+    private Reiziger reiziger;
 
 
-    public Adres(int id, String postcode, String huisnummer, String straat, String woonplaats, int reiziger){
-        this.id= id;
-        this.postcode= postcode;
-        this.huisnummer= huisnummer;
+    public Adres(int id, String postcode, String huisnummer, String straat, String woonplaats) {
+        this.id = id;
+        this.postcode = postcode;
+        this.huisnummer = huisnummer;
         this.straat = straat;
-        this.woonplaats= woonplaats;
-        this.reizigerId =reiziger;
+        this.woonplaats = woonplaats;
 
     }
 
@@ -65,13 +63,13 @@ public class Adres {
         return woonplaats;
     }
 
-    public int getReizigerId() {
-        return reizigerId;
+    public Reiziger getReizigerId() {
+        return reiziger;
     }
 
     @Override
     public String toString() {
-        return  " Adres{   #"+ reizigerId +",met adres_id="+id +": Postcode="+ postcode +", Huisnummer= "+ huisnummer +"}";
+        return " Adres{   #" + reiziger.getId() + ",met adres_id=" + id + ": Postcode=" + postcode + ", Huisnummer= " + huisnummer + "}";
     }
 
     public void setHuisnummer(String huisnummer) {
